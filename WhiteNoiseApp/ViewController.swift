@@ -45,6 +45,15 @@ class ViewController: UIViewController {
         view.addSubview(stopButton)
 
         setupAudioSession()
+        
+        NotificationCenter.default.addObserver(self,
+             selector: #selector(appDidBecomeActive),
+             name: UIApplication.didBecomeActiveNotification,
+             object: nil)
+        
+        deinit {
+                NotificationCenter.default.removeObserver(self)
+            }
     }
 
     override func viewDidLayoutSubviews() {
@@ -105,4 +114,11 @@ class ViewController: UIViewController {
         stopButton.isHidden = true
         playButton.isHidden = false
     }
+    
+    @objc func appDidBecomeActive() {
+        if audioPlayer?.isPlaying == true {
+            startPulseAnimation()
+        }
+    }
+
 }
