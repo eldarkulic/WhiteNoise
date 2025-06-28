@@ -41,7 +41,7 @@ class ViewController: UIViewController {
         stopButton.setImage(stopImage, for: .normal)
         stopButton.tintColor = .white
         stopButton.addTarget(self, action: #selector(stopButtonTapped), for: .touchUpInside)
-        stopButton.isHidden = true // sakrij dok se ne pusti
+        stopButton.isHidden = true
         view.addSubview(stopButton)
 
         setupAudioSession()
@@ -64,6 +64,20 @@ class ViewController: UIViewController {
         }
     }
 
+    func startPulseAnimation() {
+        let pulse = CABasicAnimation(keyPath: "transform.scale")
+        pulse.duration = 1.2
+        pulse.fromValue = 1.0
+        pulse.toValue = 1.1
+        pulse.autoreverses = true
+        pulse.repeatCount = .infinity
+        circleView.layer.add(pulse, forKey: "pulse")
+    }
+
+    func stopPulseAnimation() {
+        circleView.layer.removeAnimation(forKey: "pulse")
+    }
+    
     @objc func playButtonTapped() {
         guard let url = Bundle.main.url(forResource: "whiteNoise", withExtension: "wav") else {
             print("Audio file not found.")
@@ -74,8 +88,8 @@ class ViewController: UIViewController {
             audioPlayer = try AVAudioPlayer(contentsOf: url)
             audioPlayer?.numberOfLoops = -1
             audioPlayer?.play()
-
-            // UI update
+            //UI
+            startPulseAnimation()
             playButton.isHidden = true
             stopButton.isHidden = false
 
@@ -86,8 +100,8 @@ class ViewController: UIViewController {
 
     @objc func stopButtonTapped() {
         audioPlayer?.stop()
-
-        // UI update
+        //UI
+        stopPulseAnimation()
         stopButton.isHidden = true
         playButton.isHidden = false
     }
